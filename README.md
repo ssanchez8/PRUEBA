@@ -28,11 +28,17 @@ endmodule
 ```
 Como se puede observar, el módulo implementa un sumador-restador de 4 bits reutilizando cuatro full adders de 1 bit. La señal M, según su estado, define si el circuito se encuentra sumando (M=0 ) o restando (M=1). Para el último caso aplica el complemento a 2 de  B, invirtiendo cada bit de B mediante una compuerta XOR con M, y usando a M como el acarreo inicial del primer sumador. Como se ve, los acarreos se propagan entre los módulos, lo que genera las salidas de resultados S y Cout.
 
-
-Ahora se pasamos a programar el codigo para el test bench con lso ciclos para poder comprobar todos los ciclos:
-
 <p align="center">
-<pre>
+  <strong>Figura 4.</strong> Representación RTL del sumador-restador de 4 bits (vista estructural).<br>
+  <img src="RTL_SUMREST_EST.jpeg" alt="Figura 5" width="700">
+</p>
+
+Como se observa en el RTL, la implementación se realizó de manera estructural. Cada bit de la entrada B pasa primero por una compuerta XOR, que es controlada por la señal M y como se sabe determina el modo de operación. Se puede observar que el acarreo inicial del primer sumador recibe el valor de M para poder inyyectar el 1 necesario para formar el complemento a 2 de manera correcta. Los cuatro módulos sumador1bit, se conectan en cascada, propagando los acarreos entre sí, y generando al final las salidas S y Cout.
+
+Podemos ahora pasar a implementar el código de prueba para el test bench utilizando los  ciclos for para la comprobación de todas las posibles combinaciones, así:
+
+``` verilog
+
 `timescale 1ns/1ns
 `include "sumadorrestador4bit.v"
 
@@ -77,20 +83,23 @@ module tb_sumadorrestador4b;
 
 endmodule
 
-</pre>
-</p>
+```
+
 
 Esto nos da los siguientes resultados en la simulación:
 
 
 <p align="center"> 
-  <b>Figura 7.</b> Simulación del sumador–restador de 4 bits estructural <br> <img src="https://github.com/user-attachments/assets/bc907d9b-4269-4ba6-8965-e276e2e11281" alt="Figura 7" width="1000"> 
+  <b>Figura 7.</b> Simulación del sumador–restador de 4 bits estructural <br> <img src="https://github.com/user-attachments/assets/bc907d9b-4269-4ba6-8965-e276e2e11281" alt="Figura 7" width="1500"> 
 </p>
+
+
+Para la comprobación se estudiaron múltiples casos, y se determinó que el implementación funciona correctamente. Para la muestra de lo obtenido, en este documento se mostrará el caso de 13-2, donde el valor esperado de esta operación es 11. Se tiene entonces que A=13 (1101) y B=2 (0010). Si aplicamos complemento a 2 a B, se tiene que 1101 + 1 =  
+
 
 Seguimos entonces con la parte comportamental que como vimos no necesita de un modulo aparte, solo que en el codigo quede explicito las operaciones:
 
-<p align="center">
-<pre>
+``` verilog
 module sumadorrestador4bC (
     input  [3:0] A,     
     input  [3:0] B,     
@@ -106,13 +115,16 @@ module sumadorrestador4bC (
     end
 endmodule
 
-</pre>
+```
+
+<p align="center">
+  <strong>Figura 4.</strong> Representación RTL del sumador-restador de 4 bits (vista comportamental).<br>
+  <img src="RTL_SUMREST_COMP.jpeg" alt="Figura 5" width="700">
 </p>
 
 Y seguimos con su codigo para el test bench:
 
-<p align="center">
-<pre>
+``` verilog
 `timescale 1ns/1ns
 `include "sumadorrestador4bitC.v"
 
@@ -157,8 +169,7 @@ module tb_sumadorrestador4bC;
 
 endmodule
 
-</pre>
-</p>
+```
 
 Y de este obtenemos los siguientes resultados:
 
